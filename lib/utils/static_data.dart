@@ -24,6 +24,19 @@ class RelationNames {
 
     static List<DropdownMenuItem<String>> get dropdownItems =>
         DropdownUtils.fromStrings(relations);
+
+    static Icon getRelationIcon(String relation) {
+        switch (relation) {
+            case 'Family':
+                return const Icon(Icons.family_restroom); // Beispiel für Familie
+            case 'Friend':
+                return const Icon(Icons.favorite); // Beispiel für Freunde
+            case 'Acquaintance':
+                return const Icon(Icons.account_circle); // Beispiel für Bekannte
+            default:
+                return const Icon(Icons.help); // Fallback für unbekannte Beziehungen
+        }
+    }
 }
 
 class ColorNames {

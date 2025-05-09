@@ -8,25 +8,37 @@ import '../utils/widget_utils.dart';
 import '../widgets/avatar_tile.dart';
 import '../widgets/dropdown_tile.dart';
 
-class AddFriendDialog extends StatefulWidget {
-    const AddFriendDialog({super.key});
+class FriendDialog extends StatefulWidget {
+    final Friend? friendToEdit;
+
+    const FriendDialog({super.key, this.friendToEdit});
 
     @override
-    _AddFriendDialogState createState() => _AddFriendDialogState();
+    State<FriendDialog> createState() => _FriendDialogState();
 }
 
-class _AddFriendDialogState extends State<AddFriendDialog> {
+class _FriendDialogState extends State<FriendDialog> {
     final TextEditingController nameController = TextEditingController();
     final avatarImages = AvatarFilenames.avatars;
     final relationItems = RelationNames.relations;
+    String selectedAvatar = AvatarFilenames.avatars.first;
+    String chosenRelation = RelationNames.relations.first;
+
+    @override
+    void initState() {
+        super.initState();
+        final friend = widget.friendToEdit;
+        if (friend != null) {
+            nameController.text = friend.name;
+            selectedAvatar = friend.avatar;
+            chosenRelation = friend.relation;
+        }
+    }
 
     @override
     Widget build(BuildContext context) {
-        String selectedAvatar = avatarImages.first;
-        String chosenName = '';
-        String chosenRelation = relationItems.first;
         return AlertDialog(
-            title: const Text('Add New Friend'),
+            title: Text(widget.friendToEdit == null ? 'Add New Friend' : 'Edit Friend'),
             content: SingleChildScrollView(
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -43,15 +55,15 @@ class _AddFriendDialogState extends State<AddFriendDialog> {
                             }
                         ),
                         EditableTile(
-                            icon: Icons.edit,
-                            label: chosenName,
+                            icon: Icons.person,
+                            label: nameController.text.isEmpty ? 'Enter Name' : nameController.text,
                             onEdit: () => showEditDialog(
                                 context,
                                 title: 'Change Name',
-                                initialValue: chosenName,
+                                initialValue: nameController.text,
                                 onSave: (newName) {
                                     setState(() {
-                                            chosenName = newName;
+                                            nameController.text = newName;
                                         });
                                 }
                             )
@@ -71,16 +83,22 @@ class _AddFriendDialogState extends State<AddFriendDialog> {
                 )
             ),
             actions: [
+                // Save action
                 TextButton(
                     onPressed: () {
-                        if (chosenName.isNotEmpty && selectedAvatar.isNotEmpty && chosenRelation.isNotEmpty) {
+                        if (nameController.text.isNotEmpty && selectedAvatar.isNotEmpty && chosenRelation.isNotEmpty) {
                             final newFriend = Friend(
-                                id: '',
-                                name: chosenName,
+                                id: widget.friendToEdit?.id ?? '',
+                                name: nameController.text,
                                 relation: chosenRelation,
                                 avatar: selectedAvatar
                             );
-                            Provider.of<FriendsProvider>(context, listen: false).addFriend(newFriend);
+                            final provider = Provider.of<FriendsProvider>(context, listen: false);
+                            if (widget.friendToEdit == null) {
+                                provider.addFriend(newFriend);
+                            } else {
+                                provider.updateFriend(newFriend);
+                            }
                             Navigator.of(context).pop();
                         } else {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -88,8 +106,9 @@ class _AddFriendDialogState extends State<AddFriendDialog> {
                             );
                         }
                     },
-                    child: const Text('Add Friend')
+                    child: Text(widget.friendToEdit == null ? 'Add New Friend' : 'Edit Friend')
                 ),
+                // Cancel action
                 TextButton(
                     onPressed: () {
                         Navigator.of(context).pop();

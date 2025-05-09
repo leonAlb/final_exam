@@ -1,4 +1,6 @@
 import 'package:finale_project/firebase_options.dart';
+import 'package:finale_project/providers/friends_provider.dart';
+import 'package:finale_project/screens/friends.dart';
 import 'package:finale_project/utils/theme_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -7,15 +9,18 @@ import 'providers/settings_provider.dart';
 import 'screens/settings.dart';
 import 'screens/groups.dart';
 
-main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    runApp(
-        ChangeNotifierProvider(
-            create: (_) => SettingsProvider()..loadSettings(),
-            child: const CostaSplit()
-        )
-    );
+  runApp(
+    MultiProvider( // MultiProvider ermöglicht die Nutzung mehrerer Provider
+      providers: [
+        ChangeNotifierProvider(create: (_) => SettingsProvider()..loadSettings()), // SettingsProvider
+        ChangeNotifierProvider(create: (_) => FriendsProvider()), // Hier der FriendsProvider
+      ],
+      child: const CostaSplit(), // Deine Haupt-App
+    ),
+  );
 }
 
 class CostaSplit extends StatelessWidget {
@@ -56,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Widget> _screens = <Widget>[
         SettingsScreen(),
         HomeTab(),
-        Center(child: Text("Friends Tab Content"))
+        FriendsScreen()
     ];
 
     void _onItemTapped(int index) {

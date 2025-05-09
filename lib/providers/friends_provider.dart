@@ -9,8 +9,9 @@ class FriendsProvider with ChangeNotifier {
   List<Friend> get friends => _friends;
 
   Future<void> addFriend(Friend friend) async {
-    await _friendService.addFriend(friend);
-    _friends.add(friend);
+    final savedFriend = await _friendService.addFriend(friend);
+    _friends.add(savedFriend);
+    _sortFriends();
     notifyListeners();
   }
 
@@ -18,7 +19,17 @@ class FriendsProvider with ChangeNotifier {
     final loadedFriends = await _friendService.getFriends();
     _friends.clear();
     _friends.addAll(loadedFriends);
+    _sortFriends();
     notifyListeners();
+  }
+
+  Future<void> updateFriend(Friend friend) async {
+    await _friendService.updateFriend(friend);
+    final index = _friends.indexWhere((f) => f.id == friend.id);
+    if (index != -1) {
+      _friends[index] = friend;
+      notifyListeners();
+    }
   }
 
   Future<void> deleteFriend(String id) async {
@@ -26,4 +37,23 @@ class FriendsProvider with ChangeNotifier {
     _friends.removeWhere((f) => f.id == id);
     notifyListeners();
   }
+
+  Future<void> toggleHighlight(Friend friend) async {
+    final updatedFriend = friend.copyWith(isHighlighted: !friend.isHighlighted);
+    await _friendService.updateFriend(updatedFriend);
+    final index = _friends.indexWhere((f) => f.id == friend.id);
+    _friends[index] = updatedFriend;
+    _sortFriends();
+    notifyListeners();
+  }
+
+  void _sortFriends() {
+    _friends.sort((a, b) {
+      if (a.isHighlighted == b.isHighlighted) {
+        return 0;
+      }
+      return a.isHighlighted ? -1 : 1;
+    });
+  }
 }
+
