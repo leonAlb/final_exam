@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "931564903992",
+    "project_id": "costasplit-ce2fb",
+    "storage_bucket": "costasplit-ce2fb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:931564903992:android:7eb1f9d2bdcc8cefcbd0cd",
+        "android_client_info": {
+          "package_name": "com.example.finale_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_xcvTHVHdWXdddCATD6T-C64WdqqI9P4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
