@@ -9,7 +9,6 @@ class FriendService {
       return friend.copyWith(id: docRef.id);
     }
 
-
     Future<List<Friend>> getFriends() async {
         final snapshot = await friendsCollection.get();
         return snapshot.docs.map((doc) => Friend.fromMap(doc.id, doc.data() as Map<String, dynamic>)).toList();

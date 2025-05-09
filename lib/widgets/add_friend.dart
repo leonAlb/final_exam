@@ -23,6 +23,7 @@ class _FriendDialogState extends State<FriendDialog> {
     final relationItems = RelationNames.relations;
     String selectedAvatar = AvatarFilenames.avatars.first;
     String chosenRelation = RelationNames.relations.first;
+    bool isHighlighted = false;
 
     @override
     void initState() {
@@ -32,6 +33,7 @@ class _FriendDialogState extends State<FriendDialog> {
             nameController.text = friend.name;
             selectedAvatar = friend.avatar;
             chosenRelation = friend.relation;
+            isHighlighted = friend.isHighlighted;
         }
     }
 
@@ -91,7 +93,8 @@ class _FriendDialogState extends State<FriendDialog> {
                                 id: widget.friendToEdit?.id ?? '',
                                 name: nameController.text,
                                 relation: chosenRelation,
-                                avatar: selectedAvatar
+                                avatar: selectedAvatar,
+                                isHighlighted: isHighlighted
                             );
                             final provider = Provider.of<FriendsProvider>(context, listen: false);
                             if (widget.friendToEdit == null) {

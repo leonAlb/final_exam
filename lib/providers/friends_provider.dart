@@ -42,9 +42,11 @@ class FriendsProvider with ChangeNotifier {
     final updatedFriend = friend.copyWith(isHighlighted: !friend.isHighlighted);
     await _friendService.updateFriend(updatedFriend);
     final index = _friends.indexWhere((f) => f.id == friend.id);
-    _friends[index] = updatedFriend;
-    _sortFriends();
-    notifyListeners();
+    if (index != -1) {
+      _friends[index] = updatedFriend;
+      _sortFriends();
+      notifyListeners();
+    }
   }
 
   void _sortFriends() {
