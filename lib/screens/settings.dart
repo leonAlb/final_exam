@@ -20,7 +20,6 @@ class SettingsScreen extends StatelessWidget {
 
         final items = [
             AvatarDropdownTile(
-                icon: Icons.person,
                 label: 'My Picture',
                 value: settingsProvider.selectedAvatar,
                 avatarImages: avatarImages,

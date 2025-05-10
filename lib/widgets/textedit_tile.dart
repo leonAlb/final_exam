@@ -10,12 +10,23 @@ class EditableTile extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
-        return ListTile(
-            leading: Icon(icon),
-            title: Text(label),
-            trailing: ElevatedButton(
-                onPressed: onEdit,
-                child: const Text("Change")
+        return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            child: Row(
+                children: [
+                    Icon(icon, size: 28.0),
+                    const SizedBox(width: 16),
+                    Expanded(
+                        child: Text(
+                            label,
+                            style: Theme.of(context).textTheme.bodyLarge
+                        )
+                    ),
+                    ElevatedButton(
+                        onPressed: onEdit,
+                        child: const Text("Change")
+                    )
+                ]
             )
         );
     }

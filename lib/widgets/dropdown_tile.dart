@@ -13,14 +13,25 @@ class DropdownTile extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
-        return ListTile(
-            leading: Icon(icon),
-            title: Text(label),
-            trailing: DropdownButton<String>(
-                value: value,
-                onChanged: onChanged,
-                items: items
-            )
+        return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            child: Row(
+                children: [
+                    Icon(icon, size: 28.0),
+                    const SizedBox(width: 16),
+                    Expanded(
+                        child: Text(
+                            label,
+                            style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                    ),
+                    DropdownButton<String>(
+                        value: value,
+                        onChanged: onChanged,
+                        items: items,
+                    ),
+                ],
+            ),
         );
     }
 }

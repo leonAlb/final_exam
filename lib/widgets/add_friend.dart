@@ -1,9 +1,11 @@
+import 'package:finale_project/providers/settings_provider.dart';
 import 'package:finale_project/widgets/textedit_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/friend.dart';
 import '../providers/friends_provider.dart';
 import '../utils/static_data.dart';
+import '../utils/theme_utils.dart';
 import '../utils/widget_utils.dart';
 import '../widgets/avatar_tile.dart';
 import '../widgets/dropdown_tile.dart';
@@ -19,6 +21,7 @@ class FriendDialog extends StatefulWidget {
 
 class _FriendDialogState extends State<FriendDialog> {
     final TextEditingController nameController = TextEditingController();
+    final TextEditingController mailController = TextEditingController();
     final avatarImages = AvatarFilenames.avatars;
     final relationItems = RelationNames.relations;
     String selectedAvatar = AvatarFilenames.avatars.first;
@@ -30,95 +33,130 @@ class _FriendDialogState extends State<FriendDialog> {
         super.initState();
         final friend = widget.friendToEdit;
         if (friend != null) {
-            nameController.text = friend.name;
             selectedAvatar = friend.avatar;
+            nameController.text = friend.name;
             chosenRelation = friend.relation;
+            mailController.text = friend.email;
             isHighlighted = friend.isHighlighted;
         }
     }
 
     @override
     Widget build(BuildContext context) {
-        return AlertDialog(
-            title: Text(widget.friendToEdit == null ? 'Add New Friend' : 'Edit Friend'),
-            content: SingleChildScrollView(
-                child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                        AvatarDropdownTile(
-                            icon: Icons.person,
-                            label: 'Your Avatar',
-                            value: selectedAvatar,
-                            avatarImages: avatarImages,
-                            onChanged: (newAvatar) {
-                                setState(() {
-                                        selectedAvatar = newAvatar!;
-                                    });
-                            }
-                        ),
-                        EditableTile(
-                            icon: Icons.person,
-                            label: nameController.text.isEmpty ? 'Enter Name' : nameController.text,
-                            onEdit: () => showEditDialog(
-                                context,
-                                title: 'Change Name',
-                                initialValue: nameController.text,
-                                onSave: (newName) {
-                                    setState(() {
-                                            nameController.text = newName;
-                                        });
-                                }
+        final width = MediaQuery.of(context).size.width;
+        final settingsProvider = Provider.of<SettingsProvider>(context);
+        final isDark = settingsProvider.isDarkMode;
+        final theme = settingsProvider.colorTheme;
+        Color desiredColor = getColor(theme, isDark);
+        return Dialog(
+            insetPadding: EdgeInsets.all(10),
+            child: SizedBox(
+                width: width,
+                child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 20.0),
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                            SingleChildScrollView(
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                        AvatarDropdownTile(
+                                            label: 'Avatar',
+                                            value: selectedAvatar,
+                                            avatarImages: avatarImages,
+                                            onChanged: (newAvatar) {
+                                                setState(() {
+                                                        selectedAvatar = newAvatar!;
+                                                    });
+                                            }
+                                        ),
+                                        const SizedBox(height: 16),
+                                        EditableTile(
+                                            icon: Icons.person,
+                                            label: nameController.text.isEmpty ? 'Enter Name' : nameController.text,
+                                            onEdit: () => showEditDialog(
+                                                context,
+                                                title: 'Change Name',
+                                                initialValue: nameController.text,
+                                                onSave: (newName) {
+                                                    setState(() {
+                                                            nameController.text = newName;
+                                                        });
+                                                }
+                                            )
+                                        ),
+                                        const SizedBox(height: 16),
+                                        EditableTile(
+                                            icon: Icons.email_outlined,
+                                            label: mailController.text.isEmpty ? 'Enter Email' : mailController.text,
+                                            onEdit: () => showEditDialog(
+                                                context,
+                                                title: 'Change Email',
+                                                initialValue: mailController.text,
+                                                onSave: (newMail) {
+                                                    setState(() {
+                                                            mailController.text = newMail;
+                                                        });
+                                                }
+                                            )
+                                        ),
+                                        const SizedBox(height: 16),
+                                        DropdownTile(
+                                            icon: Icons.family_restroom,
+                                            label: 'Relation',
+                                            value: chosenRelation,
+                                            items: RelationNames.dropdownItems,
+                                            onChanged: (newRelation) {
+                                                setState(() {
+                                                        chosenRelation = newRelation!;
+                                                    });
+                                            }
+                                        ),
+                                        const SizedBox(height: 20)
+                                    ]
+                                )
+                            ),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                    TextButton(
+                                        onPressed: () => Navigator.of(context).pop(),
+                                        child: const Text('Cancel')
+                                    ),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                            if (nameController.text.isNotEmpty && selectedAvatar.isNotEmpty && chosenRelation.isNotEmpty) {
+                                                final newFriend = Friend(
+                                                    id: widget.friendToEdit?.id ?? '',
+                                                    avatar: selectedAvatar,
+                                                    name: nameController.text,
+                                                    relation: chosenRelation,
+                                                    email: mailController.text,
+                                                    isHighlighted: isHighlighted
+                                                );
+                                                final provider = Provider.of<FriendsProvider>(context, listen: false);
+                                                if (widget.friendToEdit == null) {
+                                                    provider.addFriend(newFriend);
+                                                } else {
+                                                    provider.updateFriend(newFriend);
+                                                }
+                                                Navigator.of(context).pop();
+                                            } else {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(content: Text('Please fill in all fields.'))
+                                                );
+                                            }
+                                        },
+                                        child: Text(widget.friendToEdit == null ? 'Add New Friend' : 'Edit Friend')
+                                    )
+                                ]
                             )
-                        ),
-                        DropdownTile(
-                            icon: Icons.family_restroom,
-                            label: 'Relation',
-                            value: chosenRelation,
-                            items: RelationNames.dropdownItems,
-                            onChanged: (newRelation) {
-                                setState(() {
-                                        chosenRelation = newRelation!;
-                                    });
-                            }
-                        )
-                    ]
+                        ]
+                    )
                 )
-            ),
-            actions: [
-                // Save action
-                TextButton(
-                    onPressed: () {
-                        if (nameController.text.isNotEmpty && selectedAvatar.isNotEmpty && chosenRelation.isNotEmpty) {
-                            final newFriend = Friend(
-                                id: widget.friendToEdit?.id ?? '',
-                                name: nameController.text,
-                                relation: chosenRelation,
-                                avatar: selectedAvatar,
-                                isHighlighted: isHighlighted
-                            );
-                            final provider = Provider.of<FriendsProvider>(context, listen: false);
-                            if (widget.friendToEdit == null) {
-                                provider.addFriend(newFriend);
-                            } else {
-                                provider.updateFriend(newFriend);
-                            }
-                            Navigator.of(context).pop();
-                        } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Please fill in all fields.'))
-                            );
-                        }
-                    },
-                    child: Text(widget.friendToEdit == null ? 'Add New Friend' : 'Edit Friend')
-                ),
-                // Cancel action
-                TextButton(
-                    onPressed: () {
-                        Navigator.of(context).pop();
-                    },
-                    child: const Text('Cancel')
-                )
-            ]
+            )
         );
     }
 }
