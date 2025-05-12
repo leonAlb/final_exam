@@ -44,10 +44,6 @@ class _FriendDialogState extends State<FriendDialog> {
     @override
     Widget build(BuildContext context) {
         final width = MediaQuery.of(context).size.width;
-        final settingsProvider = Provider.of<SettingsProvider>(context);
-        final isDark = settingsProvider.isDarkMode;
-        final theme = settingsProvider.colorTheme;
-        Color desiredColor = getColor(theme, isDark);
         return Dialog(
             insetPadding: EdgeInsets.all(10),
             child: SizedBox(
@@ -56,68 +52,59 @@ class _FriendDialogState extends State<FriendDialog> {
                     padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 20.0),
                     child: Column(
                         mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                            SingleChildScrollView(
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                        AvatarDropdownTile(
-                                            label: 'Avatar',
-                                            value: selectedAvatar,
-                                            avatarImages: avatarImages,
-                                            onChanged: (newAvatar) {
-                                                setState(() {
-                                                        selectedAvatar = newAvatar!;
-                                                    });
-                                            }
-                                        ),
-                                        const SizedBox(height: 16),
-                                        EditableTile(
-                                            icon: Icons.person,
-                                            label: nameController.text.isEmpty ? 'Enter Name' : nameController.text,
-                                            onEdit: () => showEditDialog(
-                                                context,
-                                                title: 'Change Name',
-                                                initialValue: nameController.text,
-                                                onSave: (newName) {
-                                                    setState(() {
-                                                            nameController.text = newName;
-                                                        });
-                                                }
-                                            )
-                                        ),
-                                        const SizedBox(height: 16),
-                                        EditableTile(
-                                            icon: Icons.email_outlined,
-                                            label: mailController.text.isEmpty ? 'Enter Email' : mailController.text,
-                                            onEdit: () => showEditDialog(
-                                                context,
-                                                title: 'Change Email',
-                                                initialValue: mailController.text,
-                                                onSave: (newMail) {
-                                                    setState(() {
-                                                            mailController.text = newMail;
-                                                        });
-                                                }
-                                            )
-                                        ),
-                                        const SizedBox(height: 16),
-                                        DropdownTile(
-                                            icon: Icons.family_restroom,
-                                            label: 'Relation',
-                                            value: chosenRelation,
-                                            items: RelationNames.dropdownItems,
-                                            onChanged: (newRelation) {
-                                                setState(() {
-                                                        chosenRelation = newRelation!;
-                                                    });
-                                            }
-                                        ),
-                                        const SizedBox(height: 20)
-                                    ]
+                            AvatarDropdownTile(
+                                label: 'Avatar',
+                                value: selectedAvatar,
+                                avatarImages: avatarImages,
+                                onChanged: (newAvatar) {
+                                    setState(() {
+                                            selectedAvatar = newAvatar!;
+                                        });
+                                }
+                            ),
+                            EditableTile(
+                                icon: Icons.person,
+                                label: nameController.text.isEmpty ? 'Enter Name' : nameController.text,
+                                onEdit: () => showEditDialog(
+                                    context,
+                                    title: 'Change Name',
+                                    initialValue: nameController.text,
+                                    onSave: (newName) {
+                                        setState(() {
+                                                nameController.text = newName;
+                                            });
+                                    }
                                 )
                             ),
+                            EditableTile(
+                                icon: Icons.email_outlined,
+                                label: mailController.text.isEmpty ? 'Enter Email' : mailController.text,
+                                onEdit: () => showEditDialog(
+                                    context,
+                                    title: 'Change Email',
+                                    initialValue: mailController.text,
+                                    onSave: (newMail) {
+                                        setState(() {
+                                                mailController.text = newMail;
+                                            });
+                                    }
+                                )
+                            ),
+                            DropdownTile(
+                                icon: Icons.family_restroom,
+                                label: 'Relation',
+                                value: chosenRelation,
+                                items: RelationNames.dropdownItems,
+                                onChanged: (newRelation) {
+                                    setState(() {
+                                            chosenRelation = newRelation!;
+                                        });
+                                }
+                            ),
+                            const SizedBox(height: 20),
                             Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [

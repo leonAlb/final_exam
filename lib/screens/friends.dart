@@ -1,4 +1,5 @@
-import 'package:finale_project/widgets/add_friend.dart';
+import 'package:finale_project/providers/settings_provider.dart';
+import 'package:finale_project/widgets/friend_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/friends_provider.dart';
@@ -31,7 +32,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
     @override
     Widget build(BuildContext context) {
         final friendsProvider = Provider.of<FriendsProvider>(context);
-        final friends = friendsProvider.friends.take(friendsToLoad).toList(); // Nur die ersten 'friendsToLoad' Freunde anzeigen
+        final friends = friendsProvider.friends.take(friendsToLoad).toList();
+        final settingsProvider = Provider.of<SettingsProvider>(context);
 
         return Scaffold(
             appBar: AppBar(title: const Text("Friends"), centerTitle: true),
@@ -40,67 +42,81 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 : Column(
                     children: [
                         Expanded(
-                            child: ListView.separated(
-                                padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: ListView.builder(
                                 itemCount: friends.length,
                                 itemBuilder: (context, index) {
                                     final friend = friends[index];
                                     return Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                                        child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                                Row(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                                color: settingsProvider.isDarkMode ? Colors.grey[850] : Colors.grey[100],
+                                                borderRadius: BorderRadius.circular(20),
+                                                boxShadow: [
+                                                    BoxShadow(
+                                                        color: settingsProvider.isDarkMode
+                                                            ? Color.fromRGBO(255, 255, 255, 0.125)
+                                                            : Color.fromRGBO(0, 0, 0, 0.125),
+                                                        spreadRadius: 2,
+                                                        blurRadius: 6,
+                                                        offset: const Offset(0, 3)
+                                                    )
+                                                ]
+                                            ),
+                                            child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                                child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: [
-                                                        CircleAvatar(backgroundImage: AssetImage(friend.avatar)),
-                                                        const SizedBox(width: 15),
-                                                        Text(
-                                                            friend.name,
-                                                            style: const TextStyle(fontWeight: FontWeight.bold)
-                                                        )
-                                                    ]
-                                                ),
-                                                Row(
-                                                    children: [
-                                                        Text(
-                                                            friend.relation,
-                                                            style: const TextStyle(fontStyle: FontStyle.italic)
+                                                        Row(
+                                                            children: [
+                                                                CircleAvatar(backgroundImage: AssetImage(friend.avatar)),
+                                                                const SizedBox(width: 15),
+                                                                Text(
+                                                                    friend.name,
+                                                                    style: const TextStyle(fontWeight: FontWeight.bold)
+                                                                )
+                                                            ]
                                                         ),
-                                                        IconButton(
-                                                            icon: RelationNames.getRelationIcon(friend.relation),
-                                                            color: friend.isHighlighted ? Colors.red : Colors.grey,
-                                                            onPressed: () {
-                                                                Provider.of<FriendsProvider>(context, listen: false).toggleHighlight(friend);
-                                                            }
-                                                        ),
-                                                        IconButton(
-                                                            icon: const Icon(Icons.delete),
-                                                            padding: EdgeInsets.zero,
-                                                            visualDensity: VisualDensity.compact,
-                                                            onPressed: () {
-                                                                friendsProvider.deleteFriend(friend.id);
-                                                                setState(() {});
-                                                            }
-                                                        ),
-                                                        IconButton(
-                                                            icon: const Icon(Icons.edit),
-                                                            padding: EdgeInsets.zero,
-                                                            visualDensity: VisualDensity.compact,
-                                                            onPressed: () {
-                                                                showDialog(
-                                                                    context: context,
-                                                                    builder: (_) => FriendDialog(friendToEdit: friend)
-                                                                );
-                                                            }
+                                                        Row(
+                                                            children: [
+                                                                IconButton(
+                                                                    icon: RelationNames.getRelationIcon(friend.relation),
+                                                                    color: friend.isHighlighted ? Colors.red : Colors.grey,
+                                                                    onPressed: () {
+                                                                        Provider.of<FriendsProvider>(context, listen: false)
+                                                                            .toggleHighlight(friend);
+                                                                    }
+                                                                ),
+                                                                IconButton(
+                                                                    icon: const Icon(Icons.delete),
+                                                                    padding: EdgeInsets.zero,
+                                                                    visualDensity: VisualDensity.compact,
+                                                                    onPressed: () {
+                                                                        friendsProvider.deleteFriend(friend.id);
+                                                                        setState(() {});
+                                                                    }
+                                                                ),
+                                                                IconButton(
+                                                                    icon: const Icon(Icons.edit),
+                                                                    padding: EdgeInsets.zero,
+                                                                    visualDensity: VisualDensity.compact,
+                                                                    onPressed: () {
+                                                                        showDialog(
+                                                                            context: context,
+                                                                            builder: (_) => FriendDialog(friendToEdit: friend)
+                                                                        );
+                                                                    }
+                                                                )
+                                                            ]
                                                         )
                                                     ]
                                                 )
-                                            ]
+                                            )
                                         )
                                     );
-                                },
-                                separatorBuilder: (_, __) => const Divider(height: 20, thickness: 5)
+                                }
                             )
                         ),
                         Padding(
