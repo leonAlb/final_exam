@@ -1,5 +1,7 @@
 import 'package:finale_project/firebase_options.dart';
+import 'package:finale_project/providers/expense_provider.dart';
 import 'package:finale_project/providers/friends_provider.dart';
+import 'package:finale_project/providers/groups_provider.dart';
 import 'package:finale_project/screens/friends.dart';
 import 'package:finale_project/utils/theme_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,12 +15,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
-    MultiProvider( // MultiProvider ermöglicht die Nutzung mehrerer Provider
+    MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => SettingsProvider()..loadSettings()), // SettingsProvider
-        ChangeNotifierProvider(create: (_) => FriendsProvider()), // Hier der FriendsProvider
+        ChangeNotifierProvider(create: (_) => SettingsProvider()..loadSettings()),
+        ChangeNotifierProvider(create: (_) => FriendsProvider()),
+        ChangeNotifierProvider(create: (_) => GroupsProvider()),
+        ChangeNotifierProvider(create: (_) => ExpensesProvider())
       ],
-      child: const CostaSplit(), // Deine Haupt-App
+      child: const CostaSplit(),
     ),
   );
 }
