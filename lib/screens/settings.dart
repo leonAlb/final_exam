@@ -16,6 +16,7 @@ class SettingsScreen extends StatelessWidget {
         final settingsProvider = Provider.of<SettingsProvider>(context);
         final username = settingsProvider.username;
         final email = settingsProvider.email;
+        final password = settingsProvider.password;
         final avatarImages = AvatarFilenames.avatars;
 
         final items = [
@@ -47,6 +48,15 @@ class SettingsScreen extends StatelessWidget {
                     title: 'Change Email',
                     initialValue: email,
                     onSave: settingsProvider.updateEmail
+                )
+            ),
+            EditableTile(
+                icon: Icons.key,
+                label: '*' * password.length,
+                onEdit: () => showSecureEditDialog(
+                    context,
+                    title: 'Change Password',
+                    onSave: settingsProvider.updatePassword
                 )
             ),
             ThemeSwitchTile(

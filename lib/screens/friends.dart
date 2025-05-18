@@ -4,17 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/friends_provider.dart';
 import '../utils/static_data.dart';
+import '../widgets/load_button_bar.dart';
 
 class FriendsScreen extends StatefulWidget {
     const FriendsScreen({super.key});
 
     @override
-    _FriendsScreenState createState() => _FriendsScreenState();
+    FriendsScreenState createState() => FriendsScreenState();
 }
 
-class _FriendsScreenState extends State<FriendsScreen> {
+class FriendsScreenState extends State<FriendsScreen> {
     bool isLoading = true;
-    int friendsToLoad = 8;
+    int friendsToLoad = 7;
+    String searchQuery = "";
 
     @override
     void initState() {
@@ -32,7 +34,11 @@ class _FriendsScreenState extends State<FriendsScreen> {
     @override
     Widget build(BuildContext context) {
         final friendsProvider = Provider.of<FriendsProvider>(context);
-        final friends = friendsProvider.friends.take(friendsToLoad).toList();
+        final friends = friendsProvider.friends;
+        final filteredFriends = friends
+            .where((friend) => friend.name.toLowerCase().contains(searchQuery))
+            .take(friendsToLoad)
+            .toList();
         final settingsProvider = Provider.of<SettingsProvider>(context);
 
         return Scaffold(
@@ -41,13 +47,29 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : Column(
                     children: [
+                        Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: TextField(
+                                decoration: const InputDecoration(
+                                    hintText: "Search friends...",
+                                    prefixIcon: Icon(Icons.search),
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20)))
+                                ),
+                                onChanged: (value) {
+                                    setState(() {
+                                            searchQuery = value.toLowerCase();
+                                        });
+                                }
+                            )
+                        ),
                         Expanded(
                             child: ListView.builder(
-                                itemCount: friends.length,
+                                padding: EdgeInsets.only(top: 5),
+                                itemCount: filteredFriends.length,
                                 itemBuilder: (context, index) {
-                                    final friend = friends[index];
+                                    final friend = filteredFriends[index];
                                     return Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5),
                                         child: Container(
                                             decoration: BoxDecoration(
                                                 color: settingsProvider.isDarkMode ? Colors.grey[850] : Colors.grey[100],
@@ -55,8 +77,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                                 boxShadow: [
                                                     BoxShadow(
                                                         color: settingsProvider.isDarkMode
-                                                            ? Color.fromRGBO(255, 255, 255, 0.125)
-                                                            : Color.fromRGBO(0, 0, 0, 0.125),
+                                                            ? Color.fromRGBO(255, 255, 255, 0.050)
+                                                            : Color.fromRGBO(0, 0, 0, 0.250),
                                                         spreadRadius: 2,
                                                         blurRadius: 6,
                                                         offset: const Offset(0, 3)
@@ -69,15 +91,21 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: [
-                                                        Row(
-                                                            children: [
-                                                                CircleAvatar(backgroundImage: AssetImage(friend.avatar)),
-                                                                const SizedBox(width: 15),
-                                                                Text(
-                                                                    friend.name,
-                                                                    style: const TextStyle(fontWeight: FontWeight.bold)
-                                                                )
-                                                            ]
+                                                        Expanded(
+                                                            child: Row(
+                                                                children: [
+                                                                    CircleAvatar(backgroundImage: AssetImage(friend.avatar)),
+                                                                    const SizedBox(width: 15),
+                                                                    Flexible(
+                                                                        child: Text(
+                                                                            friend.name,
+                                                                            style: const TextStyle(fontWeight: FontWeight.bold),
+                                                                            overflow: TextOverflow.ellipsis,
+                                                                            maxLines: 1
+                                                                        )
+                                                                    )
+                                                                ]
+                                                            )
                                                         ),
                                                         Row(
                                                             children: [
@@ -119,44 +147,22 @@ class _FriendsScreenState extends State<FriendsScreen> {
                                 }
                             )
                         ),
-                        Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child:
-                            Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                    if (friends.length < friendsProvider.friends.length)
-                                    ElevatedButton.icon(
-                                        onPressed: () {
-                                            setState(() {
-                                                    friendsToLoad += friendsToLoad;
-                                                });
-                                        },
-                                        icon: Icon(Icons.add),
-                                        label: const Text("Load More Friends"),
-                                        iconAlignment: IconAlignment.end,
-                                        style: ElevatedButton.styleFrom(
-                                            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0)
-                                        )
-                                    ),
-                                    Spacer(),
-                                    ElevatedButton.icon(
-                                        onPressed: () {
-                                            showDialog(
-                                                context: context,
-                                                builder: (_) => const FriendDialog()
-                                            );
-                                        },
-                                        icon: Icon(Icons.person_add_alt_1),
-                                        label: const Text("Add Friend"),
-                                        iconAlignment: IconAlignment.start,
-                                        style: ElevatedButton.styleFrom(
-                                            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0) // Same padding as above
-                                        )
-                                    )
-                                ]
-                            )
+                        BottomButtonBar(
+                            canLoadMore: filteredFriends.length < friendsProvider.friends.length,
+                            onLoadMore: () {
+                                setState(() {
+                                        friendsToLoad += friendsToLoad;
+                                    });
+                            },
+                            loadMoreLabel: "Load More Friends",
+                            onCreate: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => const FriendDialog()
+                                );
+                            },
+                            createIcon: Icons.person_add_alt_1,
+                            createLabel: "Add Friend"
                         )
                     ]
                 )

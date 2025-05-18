@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 Color getColor(String theme, bool isDark) {
   switch (theme) {
     case 'Green':
-      return isDark ? Colors.green.shade900 : Colors.green;
+      return isDark ? Color(0xFF09370D) : Color(0x7D7BFF7B);
     case 'Blue':
-      return isDark ? Colors.blue.shade900 : Colors.blue;
+      return isDark ? Color(0x7D071751) : Color(0x7D3E69FF);
     case 'Red':
-      return isDark ? Colors.red.shade900 : Colors.red;
+      return isDark ? Color(0x7D5E0404) : Colors.red;
     case 'Orange':
-      return isDark ? Colors.orange.shade900 : Colors.orange;
+      return isDark ? Color(0x7D602601) : Colors.orange;
     case 'Purple':
-      return isDark ? Colors.purple.shade900 : Colors.purple;
+      return isDark ? Color(0x7D38004C) : Colors.purple;
     default:
-      return isDark ? Colors.blue.shade900 : Colors.blue;
+      return isDark ? Colors.white : Colors.black;
   }
 }

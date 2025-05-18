@@ -1,11 +1,9 @@
-import 'package:finale_project/providers/settings_provider.dart';
 import 'package:finale_project/widgets/textedit_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/friend.dart';
 import '../providers/friends_provider.dart';
 import '../utils/static_data.dart';
-import '../utils/theme_utils.dart';
 import '../utils/widget_utils.dart';
 import '../widgets/avatar_tile.dart';
 import '../widgets/dropdown_tile.dart';

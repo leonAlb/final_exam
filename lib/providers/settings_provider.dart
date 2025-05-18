@@ -5,6 +5,7 @@ import '../utils/static_data.dart';
 class SettingsProvider with ChangeNotifier {
   String _username = 'user';
   String _email = 'user@example.com';
+  String _password = 'qwertz123';
   bool _isDarkMode = false;
   String _colorTheme = 'Blue';
   String _currency = 'USD';
@@ -12,6 +13,7 @@ class SettingsProvider with ChangeNotifier {
 
   String get username => _username;
   String get email => _email;
+  String get password => _password;
   bool get isDarkMode => _isDarkMode;
   String get colorTheme => _colorTheme;
   String get currency => _currency;
@@ -21,6 +23,7 @@ class SettingsProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _username = prefs.getString('username') ?? 'user';
     _email = prefs.getString('email') ?? 'user@example.com';
+    _password = prefs.getString('password') ?? 'qwertz123';
     _isDarkMode = prefs.getBool('isDarkMode') ?? false;
     _colorTheme = prefs.getString('colorTheme') ?? 'Blue';
     _currency = prefs.getString('currency') ?? 'USD';
@@ -39,6 +42,13 @@ class SettingsProvider with ChangeNotifier {
     _email = value;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('email', value);
+    notifyListeners();
+  }
+
+  Future<void> updatePassword(String value) async {
+    _password = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('password', value);
     notifyListeners();
   }
 

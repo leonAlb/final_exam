@@ -19,7 +19,9 @@ class EditableTile extends StatelessWidget {
                     Expanded(
                         child: Text(
                             label,
-                            style: Theme.of(context).textTheme.bodyLarge
+                            style: Theme.of(context).textTheme.bodyLarge,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1
                         )
                     ),
                     ElevatedButton(

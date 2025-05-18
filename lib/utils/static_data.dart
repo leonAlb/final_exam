@@ -19,22 +19,22 @@ class RelationNames {
     static const List<String> relations = [
         'Friend',
         'Family',
-        'Acquaintance',
+        'Contact'
     ];
 
     static List<DropdownMenuItem<String>> get dropdownItems =>
-        DropdownUtils.fromStrings(relations);
+    DropdownUtils.fromStrings(relations);
 
     static Icon getRelationIcon(String relation) {
         switch (relation) {
             case 'Family':
-                return const Icon(Icons.family_restroom); // Beispiel für Familie
+                return const Icon(Icons.family_restroom);
             case 'Friend':
-                return const Icon(Icons.favorite); // Beispiel für Freunde
-            case 'Acquaintance':
-                return const Icon(Icons.account_circle); // Beispiel für Bekannte
+                return const Icon(Icons.favorite); 
+            case 'Contact':
+                return const Icon(Icons.account_circle); 
             default:
-                return const Icon(Icons.help); // Fallback für unbekannte Beziehungen
+            return const Icon(Icons.help);
         }
     }
 }
@@ -45,21 +45,21 @@ class ColorNames {
         'Red',
         'Green',
         'Orange',
-        'Purple',
+        'Purple'
     ];
 
     static List<DropdownMenuItem<String>> get dropdownItems =>
-        DropdownUtils.fromStrings(themes);
+    DropdownUtils.fromStrings(themes);
 }
 
 class CurrencyNames {
     static const List<Map<String, String>> currencies = [
-        {'code': 'USD', 'label': 'USD - \$'},
-        {'code': 'EUR', 'label': 'EUR - €'},
-        {'code': 'JPY', 'label': 'JPY - ¥'},
-        {'code': 'GBP', 'label': 'GBP - £'},
+    {'code': 'USD', 'label': 'USD - \$'},
+    {'code': 'EUR', 'label': 'EUR - €'},
+    {'code': 'JPY', 'label': 'JPY - ¥'},
+    {'code': 'GBP', 'label': 'GBP - £'}
     ];
 
     static List<DropdownMenuItem<String>> get dropdownItems =>
-        DropdownUtils.fromMapList(currencies, valueKey: 'code', labelKey: 'label');
+    DropdownUtils.fromMapList(currencies, valueKey: 'code', labelKey: 'label');
 }

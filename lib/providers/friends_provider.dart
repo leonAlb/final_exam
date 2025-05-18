@@ -50,12 +50,19 @@ class FriendsProvider with ChangeNotifier {
   }
 
   void _sortFriends() {
-    _friends.sort((a, b) {
-      if (a.isHighlighted == b.isHighlighted) {
-        return 0;
-      }
-      return a.isHighlighted ? -1 : 1;
-    });
+    const relationPriority = {
+      'family': 0,
+      'friend': 1,
+      'contact': 2,
+    };
+
+    int getPriority(Friend f) {
+      final relation = f.relation.toLowerCase();
+      final base = relationPriority[relation] ?? 99;
+      return (f.isHighlighted ? 0 : 10) + base;
+    }
+
+    _friends.sort((a, b) => getPriority(a).compareTo(getPriority(b)));
   }
 }
 
