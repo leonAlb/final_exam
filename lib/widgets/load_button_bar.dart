@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class BottomButtonBar extends StatelessWidget {
+class LoadButtonBar extends StatelessWidget {
     final bool canLoadMore;
     final VoidCallback onLoadMore;
     final String loadMoreLabel;
@@ -9,7 +9,7 @@ class BottomButtonBar extends StatelessWidget {
     final IconData createIcon;
     final String createLabel;
 
-    const BottomButtonBar({
+    const LoadButtonBar({
         super.key,
         required this.canLoadMore,
         required this.onLoadMore,

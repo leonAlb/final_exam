@@ -3,8 +3,10 @@ import 'package:finale_project/widgets/friend_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/friends_provider.dart';
+import '../widgets/box_decoration.dart';
 import '../utils/static_data.dart';
 import '../widgets/load_button_bar.dart';
+import '../widgets/search_bar.dart';
 
 class FriendsScreen extends StatefulWidget {
     const FriendsScreen({super.key});
@@ -47,20 +49,13 @@ class FriendsScreenState extends State<FriendsScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : Column(
                     children: [
-                        Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextField(
-                                decoration: const InputDecoration(
-                                    hintText: "Search friends...",
-                                    prefixIcon: Icon(Icons.search),
-                                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20)))
-                                ),
-                                onChanged: (value) {
-                                    setState(() {
-                                            searchQuery = value.toLowerCase();
-                                        });
-                                }
-                            )
+                        CustomSearchBar(
+                            label: "Search Friends",
+                            onChanged: (value) {
+                                setState(() {
+                                        searchQuery = value.toLowerCase();
+                                    });
+                            }
                         ),
                         Expanded(
                             child: ListView.builder(
@@ -71,20 +66,7 @@ class FriendsScreenState extends State<FriendsScreen> {
                                     return Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5),
                                         child: Container(
-                                            decoration: BoxDecoration(
-                                                color: settingsProvider.isDarkMode ? Colors.grey[850] : Colors.grey[100],
-                                                borderRadius: BorderRadius.circular(20),
-                                                boxShadow: [
-                                                    BoxShadow(
-                                                        color: settingsProvider.isDarkMode
-                                                            ? Color.fromRGBO(255, 255, 255, 0.050)
-                                                            : Color.fromRGBO(0, 0, 0, 0.250),
-                                                        spreadRadius: 2,
-                                                        blurRadius: 6,
-                                                        offset: const Offset(0, 3)
-                                                    )
-                                                ]
-                                            ),
+                                            decoration: getBoxDecoration(settingsProvider.isDarkMode),
                                             child: Padding(
                                                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                                                 child: Row(
@@ -147,7 +129,7 @@ class FriendsScreenState extends State<FriendsScreen> {
                                 }
                             )
                         ),
-                        BottomButtonBar(
+                        LoadButtonBar(
                             canLoadMore: filteredFriends.length < friendsProvider.friends.length,
                             onLoadMore: () {
                                 setState(() {

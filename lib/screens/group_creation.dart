@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../providers/friends_provider.dart';
 import '../providers/groups_provider.dart';
 import '../models/group.dart';
+import '../widgets/search_bar.dart';
 
 class CreateGroupScreen extends StatefulWidget {
     const CreateGroupScreen({super.key});
@@ -66,18 +67,14 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                                     style: TextStyle(
                                         fontSize: 16, fontWeight: FontWeight.bold))),
                             const SizedBox(height: 8),
-                            TextField(
-                                controller: _searchController,
-                                decoration: const InputDecoration(
-                                    labelText: 'Search friends',
-                                    prefixIcon: Icon(Icons.search),
-                                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20)))),
+                            CustomSearchBar(
+                                label: "Search Friends",
                                 onChanged: (value) {
                                     setState(() {
-                                            _searchQuery = value;
-                                            friendsToLoad = friendsToLoad;
+                                            _searchQuery = value.toLowerCase();
                                         });
-                                }),
+                                }
+                            ),
                             SizedBox(height: 15),
                             Expanded(
                                 child: ListView.builder(

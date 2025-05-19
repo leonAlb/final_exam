@@ -2,7 +2,9 @@ import 'package:finale_project/providers/groups_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/settings_provider.dart';
+import '../widgets/box_decoration.dart';
 import '../widgets/load_button_bar.dart';
+import '../widgets/search_bar.dart';
 import 'group_creation.dart';
 
 class GroupScreen extends StatefulWidget {
@@ -51,20 +53,13 @@ class GroupsScreenState extends State<GroupScreen> {
                 ? const Center(child: CircularProgressIndicator())
                 : Column(
                     children: [
-                        Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextField(
-                                onChanged: (value) {
-                                    setState(() {
-                                            searchQuery = value;
-                                        });
-                                },
-                                decoration: InputDecoration(
-                                    labelText: 'Search Groups',
-                                    prefixIcon: Icon(Icons.search),
-                                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20))
-                                )
-                            )
+                        CustomSearchBar(
+                            label: "Search Groups",
+                            onChanged: (value) {
+                                setState(() {
+                                        searchQuery = value.toLowerCase();
+                                    });
+                            }
                         ),
                         Expanded(
                             child: ListView.builder(
@@ -75,20 +70,7 @@ class GroupsScreenState extends State<GroupScreen> {
                                     return Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 6),
                                         child: Container(
-                                            decoration: BoxDecoration(
-                                                color: settingsProvider.isDarkMode ? Colors.grey[850] : Colors.grey[100],
-                                                borderRadius: BorderRadius.circular(20),
-                                                boxShadow: [
-                                                    BoxShadow(
-                                                        color: settingsProvider.isDarkMode
-                                                            ? Color.fromRGBO(255, 255, 255, 0.050)
-                                                            : Color.fromRGBO(0, 0, 0, 0.250),
-                                                        spreadRadius: 2,
-                                                        blurRadius: 6,
-                                                        offset: const Offset(0, 3)
-                                                    )
-                                                ]
-                                            ),
+                                            decoration: getBoxDecoration(settingsProvider.isDarkMode),
                                             child: Padding(
                                                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                                                 child: Row(
@@ -105,8 +87,12 @@ class GroupsScreenState extends State<GroupScreen> {
                                                         SizedBox(width: 15),
                                                         Row(
                                                             children: [
-                                                                Text("Teilnehmer: ${group.memberIds.length}"),
-                                                                SizedBox(width: 5),
+                                                                Text("Members: ${group.memberIds.length + 1}"),
+                                                                const SizedBox(width: 5),
+                                                                Tooltip(
+                                                                    message: "Includes user as the group creator",
+                                                                    child: const Icon(Icons.info_outline, size: 16)
+                                                                ),
                                                                 IconButton(
                                                                     icon: const Icon(Icons.delete),
                                                                     onPressed: () {
@@ -126,7 +112,7 @@ class GroupsScreenState extends State<GroupScreen> {
                                 }
                             )
                         ),
-                        BottomButtonBar(
+                        LoadButtonBar(
                             canLoadMore: filteredGroups.length < allGroups.length,
                             onLoadMore: () {
                                 setState(() {
