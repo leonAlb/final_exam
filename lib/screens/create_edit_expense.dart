@@ -84,7 +84,7 @@ class _CreateEditExpenseScreenState extends State<CreateEditExpenseScreen> {
                                     border: OutlineInputBorder()
                                 )
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 20),
                             TextField(
                                 controller: _amountController,
                                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -221,7 +221,7 @@ class _CreateEditExpenseScreenState extends State<CreateEditExpenseScreen> {
 
                 _payerIndex = groupMembers.indexWhere((member) => member.id == widget.expenseToEdit?.payerId);
                 if (_payerIndex == -1) {
-                  _payerIndex = 0;
+                    _payerIndex = 0;
                 }
             });
     }
@@ -276,7 +276,12 @@ class _CreateEditExpenseScreenState extends State<CreateEditExpenseScreen> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                                Text(member.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                Text(
+                                    member.name,
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1
+                                ),
                                 const SizedBox(height: 4),
                                 Row(
                                     children: [

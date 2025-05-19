@@ -3,7 +3,6 @@ import 'package:finale_project/providers/friends_provider.dart';
 import 'package:finale_project/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/groups_provider.dart';
 import '../utils/static_data.dart';
 import '../widgets/box_decoration.dart';
 import '../widgets/load_button_bar.dart';
@@ -23,15 +22,15 @@ class _GroupExpensesScreenState extends State<GroupExpensesScreen> {
     @override
     void initState() {
         super.initState();
-        _loadExpenses();
+        _loadData();
     }
 
-    Future<void> _loadExpenses() async {
-      await Provider.of<ExpenseProvider>(context, listen: false)
-          .loadExpensesForGroup(widget.groupId);
-      setState(() {
-        isLoading = false;
-      });
+    Future<void> _loadData() async {
+        await Provider.of<FriendsProvider>(context, listen: false).loadFriends();
+        await Provider.of<ExpenseProvider>(context, listen: false).loadExpensesForGroup(widget.groupId);
+        setState(() {
+                isLoading = false;
+            });
     }
 
     @override
@@ -58,8 +57,7 @@ class _GroupExpensesScreenState extends State<GroupExpensesScreen> {
                                     child: Text(
                                         'No expenses yet',
                                         style: TextStyle(fontSize: 16, color: Colors.grey)
-                                    )
-                                )
+                                    ))
                                 : ListView.builder(
                                     padding: const EdgeInsets.all(8),
                                     itemCount: transactions.length,
@@ -67,39 +65,36 @@ class _GroupExpensesScreenState extends State<GroupExpensesScreen> {
                                         final expense = transactions[index];
                                         final friend = friendsProvider.getFriendById(expense.payerId);
                                         final payerName = friend?.name ?? 'N/A';
-                                        final avatarPath =
-                                            friend?.avatar ?? AvatarFilenames.avatars.first;
+                                        final avatarPath = friend?.avatar ?? AvatarFilenames.avatars.first;
 
                                         return Padding(
                                             padding: const EdgeInsets.symmetric(vertical: 6),
                                             child: Container(
-                                                decoration:
-                                                getBoxDecoration(settingsProvider.isDarkMode),
+                                                decoration: getBoxDecoration(settingsProvider.isDarkMode),
                                                 child: Padding(
-                                                    padding: const EdgeInsets.symmetric(
-                                                        horizontal: 16.0, vertical: 12.0),
+                                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                                                     child: Row(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment.spaceBetween,
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
                                                             CircleAvatar(
                                                                 radius: 20,
                                                                 backgroundImage: AssetImage(avatarPath)
                                                             ),
-                                                            const SizedBox(width: 5),
+                                                            const SizedBox(width: 15),
                                                             Expanded(
                                                                 child: Column(
-                                                                    crossAxisAlignment:
-                                                                    CrossAxisAlignment.start,
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
                                                                     children: [
                                                                         Text(
                                                                             payerName,
-                                                                            style: const TextStyle(
-                                                                                fontWeight: FontWeight.bold)
+                                                                            style: const TextStyle(fontWeight: FontWeight.bold),
+                                                                            overflow: TextOverflow.ellipsis,
+                                                                            maxLines: 1
                                                                         ),
                                                                         Text(
                                                                             'Paid: ${expense.amount.toStringAsFixed(2)} ${settingsProvider.currency}',
-                                                                            style: const TextStyle(color: Colors.grey, fontSize: 14)),
+                                                                            style: const TextStyle(color: Colors.grey, fontSize: 14)
+                                                                        ),
                                                                         Text(
                                                                             expense.description,
                                                                             style: TextStyle(color: Colors.grey, fontSize: 12)
@@ -121,15 +116,18 @@ class _GroupExpensesScreenState extends State<GroupExpensesScreen> {
                                                                                     Navigator.push(
                                                                                         context,
                                                                                         MaterialPageRoute(
-                                                                                            builder: (_) => CreateEditExpenseScreen(expenseToEdit: expense, groupId: widget.groupId)
+                                                                                            builder: (_) => CreateEditExpenseScreen(
+                                                                                                expenseToEdit: expense,
+                                                                                                groupId: widget.groupId
+                                                                                            )
                                                                                         )
                                                                                     );
-                                                                                }
-                                                                            ),
+                                                                                }),
                                                                             IconButton(
                                                                                 icon: const Icon(Icons.delete),
-                                                                                onPressed: () { expensesProvider.deleteExpense(expense.id); }
-                                                                            )
+                                                                                onPressed: () {
+                                                                                    expensesProvider.deleteExpense(expense.id);
+                                                                                })
                                                                         ]
                                                                     )
                                                                 ]
@@ -159,7 +157,7 @@ class _GroupExpensesScreenState extends State<GroupExpensesScreen> {
                                 );
                             }
                         ),
-                        SizedBox(height: 15)
+                        const SizedBox(height: 15)
                     ]
                 )
         );
