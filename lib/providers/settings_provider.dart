@@ -8,7 +8,7 @@ class SettingsProvider with ChangeNotifier {
   String _password = 'qwertz123';
   bool _isDarkMode = false;
   String _colorTheme = 'Blue';
-  String _currency = 'USD';
+  String _currency = '\$';
   String _selectedAvatar = AvatarFilenames.avatars[0];
 
   String get username => _username;
@@ -26,7 +26,7 @@ class SettingsProvider with ChangeNotifier {
     _password = prefs.getString('password') ?? 'qwertz123';
     _isDarkMode = prefs.getBool('isDarkMode') ?? false;
     _colorTheme = prefs.getString('colorTheme') ?? 'Blue';
-    _currency = prefs.getString('currency') ?? 'USD';
+    _currency = prefs.getString('currency') ?? '\$';
     _selectedAvatar = prefs.getString('selectedAvatar') ?? AvatarFilenames.avatars[0];
     notifyListeners();
   }
@@ -73,10 +73,24 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSelectedAvatar(String avatar) async {
+  Future<void> updateSelectedAvatar(String avatar) async {
     final prefs = await SharedPreferences.getInstance();
     _selectedAvatar = avatar.toLowerCase();
     await prefs.setString('selectedAvatar', _selectedAvatar);
+    notifyListeners();
+  }
+
+  Future<void> resetSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    _username = 'user';
+    _email = 'user@example.com';
+    _password = 'qwertz123';
+    _isDarkMode = false;
+    _colorTheme = 'Blue';
+    _currency = '\$';
+    _selectedAvatar = AvatarFilenames.avatars[0];
     notifyListeners();
   }
 }

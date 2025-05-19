@@ -35,4 +35,13 @@ class GroupsProvider with ChangeNotifier {
     _groups.removeWhere((f) => f.id == id);
     notifyListeners();
   }
+
+  Group? getGroupById(String id) {
+    try {
+      return _groups.firstWhere((group) => group.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
 }

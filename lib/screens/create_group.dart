@@ -15,7 +15,6 @@ class CreateGroupScreen extends StatefulWidget {
 
 class _CreateGroupScreenState extends State<CreateGroupScreen> {
     final TextEditingController _groupNameController = TextEditingController();
-    final TextEditingController _searchController = TextEditingController();
     final Set<String> _selectedFriendIds = {};
     bool isLoading = true;
     String _searchQuery = '';

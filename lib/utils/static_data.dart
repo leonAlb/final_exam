@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'dropdown_utils.dart';
-
 class AvatarFilenames {
     static const String basePath = 'assets/images/avatars/';
 
@@ -23,7 +21,7 @@ class RelationNames {
     ];
 
     static List<DropdownMenuItem<String>> get dropdownItems =>
-    DropdownUtils.fromStrings(relations);
+    fromStrings(relations);
 
     static Icon getRelationIcon(String relation) {
         switch (relation) {
@@ -49,17 +47,21 @@ class ColorNames {
     ];
 
     static List<DropdownMenuItem<String>> get dropdownItems =>
-    DropdownUtils.fromStrings(themes);
+    fromStrings(themes);
 }
 
 class CurrencyNames {
-    static const List<Map<String, String>> currencies = [
-    {'code': 'USD', 'label': 'USD - \$'},
-    {'code': 'EUR', 'label': 'EUR - €'},
-    {'code': 'JPY', 'label': 'JPY - ¥'},
-    {'code': 'GBP', 'label': 'GBP - £'}
-    ];
+    static const List<String> currencies = ['\$', '€', '¥', '£'];
 
     static List<DropdownMenuItem<String>> get dropdownItems =>
-    DropdownUtils.fromMapList(currencies, valueKey: 'code', labelKey: 'label');
+    fromStrings(currencies);
+}
+
+List<DropdownMenuItem<String>> fromStrings(List<String> items) {
+    return items
+        .map((item) => DropdownMenuItem(
+        value: item,
+        child: Text(item)
+    ))
+        .toList();
 }

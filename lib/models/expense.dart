@@ -3,7 +3,7 @@ class Expense {
     final String description;
     final double amount;
     final String payerId;
-    final List<String> participantIds;
+    final Map<String, double> participantShares;
     final String groupId;
 
     Expense({
@@ -11,24 +11,25 @@ class Expense {
         required this.description,
         required this.amount,
         required this.payerId,
-        required this.participantIds,
-        required this.groupId
+        required this.participantShares,
+        required this.groupId,
     });
 
-    Expense copyWith({String? id,
+    Expense copyWith({
+        String? id,
         String? description,
         double? amount,
         String? payerId,
-        List<String>? participantIds,
-        String? groupId
+        Map<String, double>? participantShares,
+        String? groupId,
     }) {
         return Expense(
             id: id ?? this.id,
             description: description ?? this.description,
             amount: amount ?? this.amount,
             payerId: payerId ?? this.payerId,
-            participantIds: participantIds ?? List.from(this.participantIds),
-            groupId: groupId ?? this.groupId
+            participantShares: participantShares ?? this.participantShares,
+            groupId: groupId ?? this.groupId,
         );
     }
 
@@ -37,8 +38,8 @@ class Expense {
             'description': description,
             'amount': amount,
             'payerId': payerId,
-            'participantIds': participantIds,
-            'groupId': groupId
+            'participantShares': participantShares,
+            'groupId': groupId,
         };
     }
 
@@ -48,8 +49,10 @@ class Expense {
             description: map['description'] ?? '',
             amount: (map['amount'] ?? 0).toDouble(),
             payerId: map['payerId'] ?? '',
-            participantIds: List<String>.from(map['participantIds'] ?? []),
-            groupId: map['groupId'] ?? ''
+            participantShares: Map<String, double>.from(
+                (map['participantShares'] ?? {}).map((key, value) => MapEntry(key, (value as num).toDouble())),
+            ),
+            groupId: map['groupId'] ?? '',
         );
     }
 }

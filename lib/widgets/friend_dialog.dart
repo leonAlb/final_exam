@@ -5,8 +5,8 @@ import '../models/friend.dart';
 import '../providers/friends_provider.dart';
 import '../utils/static_data.dart';
 import '../utils/widget_utils.dart';
-import '../widgets/avatar_tile.dart';
-import '../widgets/dropdown_tile.dart';
+import '../widgets/avatar_selection_tile.dart';
+import '../widgets/dropdown_selection_tile.dart';
 
 class FriendDialog extends StatefulWidget {
     final Friend? friendToEdit;

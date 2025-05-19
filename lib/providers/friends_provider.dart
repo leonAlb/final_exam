@@ -49,6 +49,14 @@ class FriendsProvider with ChangeNotifier {
     }
   }
 
+  Friend? getFriendById(String id) {
+    try {
+      return _friends.firstWhere((f) => f.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
+
   void _sortFriends() {
     const relationPriority = {
       'family': 0,

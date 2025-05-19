@@ -20,7 +20,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SettingsProvider()..loadSettings()),
         ChangeNotifierProvider(create: (_) => FriendsProvider()),
         ChangeNotifierProvider(create: (_) => GroupsProvider()),
-        ChangeNotifierProvider(create: (_) => ExpensesProvider())
+        ChangeNotifierProvider(create: (_) => ExpenseProvider())
       ],
       child: const CostaSplit(),
     ),
