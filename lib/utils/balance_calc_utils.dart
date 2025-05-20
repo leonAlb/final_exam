@@ -1,5 +1,7 @@
 import '../models/expense.dart';
 
+// Greedy algorithm for debt simplification
+// It does not guarantee the minimal number of transactions, but it ensures correct total balances.
 Future<Map<String, Map<String, double>>> calculateBalance(List<Expense> expenses) async {
     final Map<String, double> netBalances = {};
 
