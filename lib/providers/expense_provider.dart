@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import '../models/expense.dart';
-import '../services/email_utils.dart';
+import '../utils/email_utils.dart';
 import '../services/expense_service.dart';
 import 'friends_provider.dart';
 
