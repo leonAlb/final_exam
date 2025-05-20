@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/friend.dart';
 import '../providers/friends_provider.dart';
 import '../utils/static_data.dart';
-import '../utils/widget_utils.dart';
+import 'dialog_popups.dart';
 import '../widgets/avatar_selection_tile.dart';
 import '../widgets/dropdown_selection_tile.dart';
 

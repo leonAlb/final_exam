@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/settings_provider.dart';
-import '../utils/widget_utils.dart';
+import '../widgets/dialog_popups.dart';
 import '../widgets/avatar_selection_tile.dart';
 import '../widgets/dropdown_selection_tile.dart';
 import '../widgets/textedit_tile.dart';
