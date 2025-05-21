@@ -1,5 +1,6 @@
 import 'package:finale_project/providers/expense_provider.dart';
 import 'package:finale_project/providers/friends_provider.dart';
+import 'package:finale_project/providers/groups_provider.dart';
 import 'package:finale_project/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,6 +38,7 @@ class _GroupExpensesScreenState extends State<GroupExpensesScreen> {
     @override
     Widget build(BuildContext context) {
         final settingsProvider = Provider.of<SettingsProvider>(context);
+        final groupsProvider = Provider.of<GroupsProvider>(context);
         final friendsProvider = Provider.of<FriendsProvider>(context);
         final expensesProvider = Provider.of<ExpenseProvider>(context);
 
@@ -85,8 +87,7 @@ class _GroupExpensesScreenState extends State<GroupExpensesScreen> {
                                                     .sendDebtEmails(widget.groupId, friendsProvider, settingsProvider);
 
                                                 // 2. Delete the group via your provider
-                                                // TODO deactive for now to test correct calculation
-                                                // await groupsProvider.deleteGroup(widget.groupId);
+                                                await groupsProvider.deleteGroup(widget.groupId);
 
                                                 // 3. Maybe navigate back or show a confirmation snackbar
                                                 Navigator.of(context).pop();
