@@ -28,6 +28,7 @@ class FriendsProvider with ChangeNotifier {
     final index = _friends.indexWhere((f) => f.id == friend.id);
     if (index != -1) {
       _friends[index] = friend;
+      _sortFriends();
       notifyListeners();
     }
   }
